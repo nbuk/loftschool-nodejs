@@ -5,7 +5,7 @@ const base = process.argv[2];
 const finalPath = process.argv[3];
 const shouldDelete = process.argv[4];
 
-const sort = (base) => {
+const sort = (base, finalPath) => {
     const files = fs.readdirSync(base);
 
     files.forEach((item) => {
@@ -19,13 +19,13 @@ const sort = (base) => {
                 fs.mkdirSync(`./${finalPath}`);
             }
 
-            if (!fs.existsSync(`./${finalPath}/${item[0].toUpperCase()}`)) {
-                fs.mkdirSync(`./${finalPath}/${item[0].toUpperCase()}`);
+            if (!fs.existsSync(path.join(finalPath, item[0].toUpperCase()))) {
+                fs.mkdirSync(path.join(finalPath, item[0].toUpperCase()));
             }
 
             fs.link(
                 localBase,
-                `./${finalPath}/${item[0].toUpperCase()}/${item}`,
+                path.join(finalPath, item[0].toUpperCase(), item),
                 (err) => {
                     if (err) {
                         console.error(err);
@@ -64,9 +64,9 @@ const removeDir = (base) => {
             console.log(err);
         }
     });
-} 
+}
 
-sort(base);
+sort(base, finalPath);
 
 if (shouldDelete === '-d') {
     removeDir(base);
