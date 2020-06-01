@@ -13,7 +13,7 @@ const sort = (base, finalPath) => {
         const state = fs.statSync(localBase);
 
         if (state.isDirectory()) {
-            sort(localBase);
+            sort(localBase, finalPath);
         } else {
             if (!fs.existsSync(`./${finalPath}`)) {
                 fs.mkdirSync(`./${finalPath}`);
@@ -28,8 +28,7 @@ const sort = (base, finalPath) => {
                 path.join(finalPath, item[0].toUpperCase(), item),
                 (err) => {
                     if (err) {
-                        console.error(err);
-                        return;
+                        throw new Error(err);
                     }
                 }
             );
@@ -37,37 +36,41 @@ const sort = (base, finalPath) => {
     });
 };
 
-const removeFiles = (base) => {
+const removeFiles = (base, cb) => {
     const files = fs.readdirSync(base);
 
-    files.forEach(item => {
+    files.forEach(async (item) => {
         const localBase = path.join(base, item);
         const state = fs.statSync(localBase);
 
         if (state.isDirectory()) {
-            removeDir(localBase);
-        } else {
-            fs.unlink(localBase, err => {
-                if (err) {
-                    console.log(err)
-                }
-                return;
+            removeFiles(localBase, () => {
+                fs.rmdir(localBase, (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
             });
-        }
-    })
-}
-
-const removeDir = (base) => {
-    removeFiles(base);
-    fs.rmdir(base, err => {
-        if (err) {
-            console.log(err);
+        } else {
+            fs.unlinkSync(localBase);
         }
     });
-}
+
+    cb();
+};
+
+const removeDir = (base) => {
+    removeFiles(base, () => {
+        fs.rmdir(base, (err) => {
+            if (err) {
+                console.error(err);
+            }
+        });
+    });
+};
 
 sort(base, finalPath);
 
-if (shouldDelete === '-d') {
+if (shouldDelete === "-d") {
     removeDir(base);
 }
