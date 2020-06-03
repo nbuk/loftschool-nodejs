@@ -1,20 +1,40 @@
 const http = require("http");
 const port = 8080;
 
-const interval = process.argv[2];
-const timeout = process.argv[3];
+const INTERVAL = process.argv[2] || 1000;
+const TIMEOUT = process.argv[3] || 5000;
+
+let intervalID;
+let clients = 0;
+
+const toggleConsoleOutput = (toggle) => {
+  if (toggle) {
+    if (!intervalID) {
+      intervalID = setInterval(() => {
+        console.log(new Date().toString());
+      }, INTERVAL);
+    }
+  } else {
+    if (clients < 1) {
+      clearInterval(intervalID);
+      intervalID = null;
+    }
+  }
+}
+
+const connectionHandle = (req, res) => {
+  clients++;
+  toggleConsoleOutput(true);
+  setTimeout(() => {
+    clients--;
+    toggleConsoleOutput(false);
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end(new Date().toString());
+  }, TIMEOUT);
+}
 
 http
-  .createServer((req, res) => {
-    const intervalID = setInterval(() => {
-      console.log(new Date().toString());
-    }, interval);
-    setTimeout(() => {
-      clearInterval(intervalID);
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end(new Date().toString());
-    }, timeout);
-  })
+  .createServer(connectionHandle)
   .listen(port);
 
 console.log(`Сервер запущен по адресу: localhost:${port}`);
