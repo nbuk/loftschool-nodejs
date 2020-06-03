@@ -36,7 +36,7 @@ const sort = (base, finalPath) => {
     });
 };
 
-const removeFiles = (base, cb) => {
+const removeDir = (base, cb) => {
     const files = fs.readdirSync(base);
 
     files.forEach(async (item) => {
@@ -44,28 +44,16 @@ const removeFiles = (base, cb) => {
         const state = fs.statSync(localBase);
 
         if (state.isDirectory()) {
-            removeFiles(localBase, () => {
-                fs.rmdir(localBase, (err) => {
-                    if (err) {
-                        console.error(err);
-                    }
-                });
-            });
+            removeDir(localBase);
         } else {
             fs.unlinkSync(localBase);
         }
     });
 
-    cb();
-};
-
-const removeDir = (base) => {
-    removeFiles(base, () => {
-        fs.rmdir(base, (err) => {
-            if (err) {
-                console.error(err);
-            }
-        });
+    fs.rmdir(base, (err) => {
+        if (err) {
+            console.error(err);
+        }
     });
 };
 
