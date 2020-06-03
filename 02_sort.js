@@ -65,7 +65,7 @@ const removeFiles = (base) => {
             } else {
                 fs.unlink(localBase, (err) => {
                     if (err) {
-                        console.log(err);
+                        console.error(err);
                         reject(err);
                     }
                     return;
@@ -79,17 +79,21 @@ const removeFiles = (base) => {
 
 const removeDir = async (base) => {
     await removeFiles(base);
-    fs.rmdir(base, (err) => {
-        if (err) {
-            console.log(err);
-        }
-    });
+    return new Promise((resolve, reject) => {
+        fs.rmdir(base, (err) => {
+            if (err) {
+                console.error(err);
+                reject();
+            }
+        });
+        resolve();
+    })
 };
 
-sortFiles(base, finalPath).then(() => {
+sortFiles(base, finalPath).then(async () => {
     console.log("Files sorted");
     if (shouldDelete === "-d") {
-        removeDir(base);
-        console.log('Original path has been deleted');
+        await removeDir(base);
+        console.log('Original dir has been deleted');
     }
 });
