@@ -1,0 +1,9 @@
+{
+  "goods": [
+    {
+      "name": "test",
+      "price": "999",
+      "imagePath": "./upload/test.png"
+    }
+  ]
+}

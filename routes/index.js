@@ -6,8 +6,9 @@ const loginController = require('../controllers/login');
 const adminController = require('../controllers/admin');
 
 const isAdmin = (req, res, next) => {
-  if (req.session.isAdmin) {
+  if (!req.session.isAdmin) {
     next();
+    return;
   }
 
   res.redirect('/');
@@ -20,6 +21,6 @@ router.get('/login', loginController.get);
 router.post('/login', loginController.post);
 
 router.get('/admin', isAdmin, adminController.get);
-router.post('/admin', adminController.post);
+router.post('/admin/upload', isAdmin, adminController.post);
 
 module.exports = router;
