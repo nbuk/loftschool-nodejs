@@ -31,17 +31,8 @@ const sortFiles = (base, finalPath) => {
                 if (!fs.existsSync(path.join(finalPath, fileName[0].toUpperCase()))) {
                     fs.mkdirSync(path.join(finalPath, fileName[0].toUpperCase()));
                 }
-    
-                fs.link(
-                    localBase,
-                    path.join(finalPath, fileName[0].toUpperCase(), fileName),
-                    (err) => {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        }
-                    }
-                );
+
+                fs.linkSync(localBase, path.join(finalPath, fileName[0].toUpperCase(), fileName));
             }
     
             readDir(base);
@@ -63,13 +54,7 @@ const removeFiles = (base) => {
             if (state.isDirectory()) {
                 removeDir(localBase);
             } else {
-                fs.unlink(localBase, (err) => {
-                    if (err) {
-                        console.error(err);
-                        reject(err);
-                    }
-                    return;
-                });
+                fs.unlinkSync(localBase);
             }
         });
 
@@ -90,10 +75,10 @@ const removeDir = async (base) => {
     })
 };
 
-sortFiles(base, finalPath).then(async () => {
+sortFiles(base, finalPath).then(() => {
     console.log("Files sorted");
     if (shouldDelete === "-d") {
-        await removeDir(base);
+        removeDir(base);
         console.log('Original dir has been deleted');
     }
 });
