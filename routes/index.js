@@ -21,6 +21,7 @@ router.get('/login', loginController.get);
 router.post('/login', loginController.post);
 
 router.get('/admin', isAdmin, adminController.get);
-router.post('/admin/upload', isAdmin, adminController.post);
+router.post('/admin/upload', isAdmin, adminController.addNewProduct);
+router.post('/admin/skills', isAdmin, adminController.setSkills);
 
 module.exports = router;
