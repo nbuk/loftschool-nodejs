@@ -1,5 +1,8 @@
 const fs = require("fs");
 const path = require("path");
+const util = require('util');
+const linkFile = util.promisify(fs.link);
+const unlinkFile = util.promisify(fs.unlink);
 
 const base = process.argv[2];
 const finalPath = process.argv[3];
@@ -32,7 +35,7 @@ const sortFiles = (base, finalPath) => {
                     fs.mkdirSync(path.join(finalPath, fileName[0].toUpperCase()));
                 }
 
-                fs.linkSync(localBase, path.join(finalPath, fileName[0].toUpperCase(), fileName));
+                linkFile(localBase, path.join(finalPath, fileName[0].toUpperCase(), fileName)).then('successful');
             }
     
             readDir(base);
@@ -54,7 +57,7 @@ const removeFiles = (base) => {
             if (state.isDirectory()) {
                 removeDir(localBase);
             } else {
-                fs.unlinkSync(localBase);
+                unlinkFile(localBase).then(() => console.log('File removed: ', item));
             }
         });
 
