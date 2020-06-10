@@ -146,32 +146,4 @@
     [1]
 );
 
-const formMail = document.querySelector(".form-email");
-formMail.addEventListener("submit", sendMail);
-
-async function sendMail(e) {
-    e.preventDefault();
-
-    const data = {
-        name: formMail.name.value,
-        email: formMail.email.value,
-        message: formMail.message.value,
-    };
-
-    const response = await fetch("/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-        const statusMessage = await response.text();
-        const statusForm = document.querySelector(".statusMail");
-        statusForm.classList.add("status");
-        statusForm.innerHTML = statusMessage;
-    }
-}
-
 //# sourceMappingURL=maps/app.js.map

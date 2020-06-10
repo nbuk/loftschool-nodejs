@@ -19,11 +19,6 @@
       "name": "Люстра",
       "price": "100",
       "src": "./assets/img/products/Work8.jpg"
-    },
-    {
-      "name": "Мешок с говном",
-      "price": "999",
-      "src": "./assets/img/products/Work9.jpg"
     }
   ],
   "skills": {

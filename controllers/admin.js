@@ -1,6 +1,7 @@
 const fs = require("fs");
 const formidable = require("formidable");
 const path = require("path");
+const UPLOAD_DIR = require('../core/config').UPLOAD_DIR;
 const { saveProductToDB, setSkills } = require("../models/db");
 
 module.exports.get = (req, res) => {
@@ -8,8 +9,7 @@ module.exports.get = (req, res) => {
 };
 
 module.exports.addNewProduct = (req, res) => {
-    const uploadDir = path.join(process.cwd(), "./public/assets/img/products");
-    const form = formidable.IncomingForm({uploadDir});
+    const form = formidable.IncomingForm({UPLOAD_DIR});
 
     form.parse(req, (err, fields, files) => {
         if (err) {
@@ -24,7 +24,7 @@ module.exports.addNewProduct = (req, res) => {
             return res.redirect("/admin", { status: valid.status });
         }
 
-        const fileName = path.join(uploadDir, files.photo.name);
+        const fileName = path.join(UPLOAD_DIR, files.photo.name);
 
         fs.rename(files.photo.path, fileName, (err) => {
             if (err) {
@@ -64,8 +64,7 @@ module.exports.setSkills = (req, res) => {
     const valid = validate(req.body);
 
     if (valid.err) {
-        res.redirect('pages/admin', { status: valid.status })
-        return;
+        return res.redirect('pages/admin', { status: valid.status })
     }
 
     function validate({age, concerts, cities, years}) {
@@ -78,5 +77,6 @@ module.exports.setSkills = (req, res) => {
 
     setSkills(req.body);
 
+    
     res.render('pages/admin', { msgskill: valid.status })
 }

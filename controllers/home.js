@@ -5,13 +5,15 @@ const { loadProducts, loadSkills } = require("../models/db");
 module.exports.get = async (req, res) => {
     const products = await loadProducts();
     const skills = await loadSkills();
+    const msgemail = req.flash('mesgemail');
 
-    res.render("pages/index", { skills, products });
+    res.render("pages/index", { skills, products, msgemail });
 };
 
 module.exports.post = (req, res) => {
     if (!req.body.name || !req.body.email || !req.body.message) {
-        return res.end("Все поля обязательны для заполнения!");
+        req.flash('mesgemail', 'Все поля обязательны для заполнения!');
+        return res.redirect('/');
     }
 
     const transporter = nodemailer.createTransport(config.mail.smtp);
@@ -26,9 +28,12 @@ module.exports.post = (req, res) => {
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return res.end(`При отправке письма произошла ошибка: ${error}`);
+            req.flash('mesgemail', `При отправке письма произошла ошибка: ${error}`);
+            console.error(err);
+            return res.redirect('/');
         }
 
-        return res.end("Письмо отправлено!");
+        req.flash('mesgemail', 'Письмо отправлено!');
+        return res.redirect('/');
     });
 };

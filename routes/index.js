@@ -6,12 +6,12 @@ const loginController = require('../controllers/login');
 const adminController = require('../controllers/admin');
 
 const isAdmin = (req, res, next) => {
-  if (!req.session.isAdmin) {
+  if (req.session.isAdmin) {
     next();
     return;
   }
 
-  res.redirect('/');
+  res.redirect('/login');
 }
 
 router.get('/', homeController.get);
