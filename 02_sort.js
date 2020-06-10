@@ -3,6 +3,7 @@ const path = require("path");
 const util = require('util');
 const linkFile = util.promisify(fs.link);
 const unlinkFile = util.promisify(fs.unlink);
+const rmDir = util.promisify(fs.rmdir);
 
 const base = process.argv[2];
 const finalPath = process.argv[3];
@@ -68,13 +69,7 @@ const removeFiles = (base) => {
 const removeDir = async (base) => {
     await removeFiles(base);
     return new Promise((resolve, reject) => {
-        fs.rmdir(base, (err) => {
-            if (err) {
-                console.error(err);
-                reject();
-            }
-        });
-        resolve();
+        rmDir(base).then(() => resolve());
     })
 };
 
