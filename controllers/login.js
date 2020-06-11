@@ -1,8 +1,8 @@
-module.exports.get = (req, res) => {
-  res.render('pages/login');
+module.exports.get = async (ctx, next) => {
+  return await ctx.render('pages/login.pug');
 }
 
-module.exports.post = (req, res) => {
-  req.session.isAdmin = true;
-  res.redirect('/admin');
+module.exports.post = (ctx, next) => {
+  ctx.session.isAdmin = true;
+  ctx.redirect('/admin');
 }

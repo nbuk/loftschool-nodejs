@@ -1,34 +1,47 @@
-const config = require("../core/mailConfig.json");
 const nodemailer = require("nodemailer");
+const config = require("../core/mailConfig.json");
 const { loadProducts, loadSkills } = require("../models/db");
 
-module.exports.get = async (req, res) => {
+module.exports.get = async (ctx, next) => {
     const products = await loadProducts();
     const skills = await loadSkills();
 
-    res.render("pages/index", { skills, products });
+    return await ctx.render("pages/index.pug", { skills, products });
 };
 
-module.exports.post = (req, res) => {
-    if (!req.body.name || !req.body.email || !req.body.message) {
-        return res.end("Все поля обязательны для заполнения!");
+module.exports.post = async (ctx, next) => {
+    const products = await loadProducts();
+    const skills = await loadSkills();
+    const { name, email, message } = ctx.request.body;
+
+    if (!name || !email || !message) {
+        ctx.body = "Необходимо заполнить все поля!";
+        return await ctx.render("pages/index.pug", {
+            products,
+            skills,
+            msgemail: "Необходимо заполнить все поля!",
+        });
     }
 
     const transporter = nodemailer.createTransport(config.mail.smtp);
     const mailOptions = {
-        from: `"${req.body.name}" <${req.body.email}>`,
+        from: `"${ctx.request.body.name}" <${ctx.request.body.email}>`,
         to: config.mail.smtp.auth.user,
         subject: config.mail.subject,
         text:
-            req.body.message.trim().slice(0, 500) +
-            `\n Отправлено с: <${req.body.email}>`,
+            ctx.request.body.message.trim().slice(0, 500) +
+            `\n Отправлено с: <${ctx.request.body.email}>`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return res.end(`При отправке письма произошла ошибка: ${error}`);
+            console.error(error);
         }
+    });
 
-        return res.end("Письмо отправлено!");
+    return await ctx.render("pages/index.pug", {
+        products,
+        skills,
+        msgemail: "Письмо отправлено",
     });
 };
