@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const util = require('util');
 const writeFile = util.promisify(fs.writeFile);
 
@@ -27,4 +28,4 @@ class DataBase {
     }
 }
 
-module.exports = DataBase;
+module.exports = new DataBase(path.join(process.cwd(), './models/myDB.json'));

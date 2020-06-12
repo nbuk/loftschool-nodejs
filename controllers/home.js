@@ -1,19 +1,22 @@
 const path = require('path');
 const nodemailer = require("nodemailer");
-const config = require("../core/config").mailConfig;
-const DataBase = require("../models/db");
+const config = require("../core/config").MAIL_CONFIG;
+const db = require("../models/db");
 
 
 module.exports.get = async (ctx, next) => {
-    const db = new DataBase(path.join(process.cwd(), './models/myDB.json'));
     const products = db.get('products');
     const skills = db.get('skills');
+    const msgemail = ctx.session.msgemail || null;
+
+    if (msgemail) {
+        return await ctx.render("pages/index.pug", { skills, products, msgemail });
+    }
 
     return await ctx.render("pages/index.pug", { skills, products });
 };
 
 module.exports.post = async (ctx, next) => {
-    const db = new DataBase(path.join(process.cwd(), './models/myDB.json'));
     const products = db.get('products');
     const skills = db.get('skills');
     const { name, email, message } = ctx.request.body;

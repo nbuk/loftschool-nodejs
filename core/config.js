@@ -1,6 +1,6 @@
 const path = require('path');
 
-module.exports.mailConfig = {
+module.exports.MAIL_CONFIG = {
     mail: {
         subject: 'Сообщение с сайта',
         smtp: {
