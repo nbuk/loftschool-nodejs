@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "name": "Очечи",
+      "name": "Очки",
       "price": "9 999",
       "src": "./assets/img/products/Work3.jpg"
     },
@@ -23,19 +23,19 @@
   ],
   "skills": {
     "age": {
-      "number": "999",
+      "number": "333",
       "text": "Возраст начала занятий на скрипке"
     },
     "concerts": {
-      "number": "888",
+      "number": "333",
       "text": "Концертов отыграл"
     },
     "cities": {
-      "number": "777",
+      "number": "333",
       "text": "Максимальное число городов в туре"
     },
     "years": {
-      "number": "666",
+      "number": "333",
       "text": "Лет на сцене в качестве скрипача"
     }
   }

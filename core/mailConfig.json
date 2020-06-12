@@ -6,8 +6,8 @@
       "port": 465,
       "secure": true,
       "auth": {
-        "user": "",
-        "pass": ""
+        "user": "smarpple@gmail.com",
+        "pass": "Smarrple123"
       }
     }
   }

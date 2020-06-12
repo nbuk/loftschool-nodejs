@@ -5,7 +5,18 @@ const UPLOAD_DIR = require('../core/config').UPLOAD_DIR;
 const { saveProductToDB, setSkills } = require("../models/db");
 
 module.exports.get = (req, res) => {
-    res.render("pages/admin");
+    const msgfile = req.flash('msgfile');
+    const msgskill = req.flash('msgskill');
+
+    if (msgfile.length) {
+        return res.render("pages/admin", { msgfile });
+    }
+
+    if (msgskill.length) {
+        return res.render('pages/admin', { msgskill });
+    }
+
+    res.render('pages/admin');
 };
 
 module.exports.addNewProduct = (req, res) => {
@@ -21,7 +32,8 @@ module.exports.addNewProduct = (req, res) => {
         if (valid.err) {
             fs.unlinkSync(files.photo.path);
 
-            return res.redirect("/admin", { status: valid.status });
+            req.flash('msgfile', valid.status);
+            return res.redirect("/admin");
         }
 
         const fileName = path.join(UPLOAD_DIR, files.photo.name);
@@ -39,7 +51,8 @@ module.exports.addNewProduct = (req, res) => {
             src: `./assets/img/products/${files.photo.name}`,
         });
 
-        res.render("pages/admin", { msgfile: valid.status });
+        req.flash('msgfile', valid.status);
+        res.redirect("/admin");
     });
 
     const validate = (fields, files) => {
@@ -64,7 +77,8 @@ module.exports.setSkills = (req, res) => {
     const valid = validate(req.body);
 
     if (valid.err) {
-        return res.redirect('pages/admin', { status: valid.status })
+        req.flash('msgskill', valid.status);
+        return res.redirect('/admin');
     }
 
     function validate({age, concerts, cities, years}) {
@@ -77,6 +91,6 @@ module.exports.setSkills = (req, res) => {
 
     setSkills(req.body);
 
-    
-    res.render('pages/admin', { msgskill: valid.status })
+    req.flash('msgskill', valid.status);
+    res.redirect('/admin');
 }

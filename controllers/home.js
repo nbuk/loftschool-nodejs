@@ -7,7 +7,11 @@ module.exports.get = async (req, res) => {
     const skills = await loadSkills();
     const msgemail = req.flash('mesgemail');
 
-    res.render("pages/index", { skills, products, msgemail });
+    if (msgemail.length) {
+        return res.render("pages/index", { skills, products, msgemail });
+    }
+
+    res.render("pages/index", { skills, products });
 };
 
 module.exports.post = (req, res) => {
@@ -29,7 +33,7 @@ module.exports.post = (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             req.flash('mesgemail', `При отправке письма произошла ошибка: ${error}`);
-            console.error(err);
+            console.error(error);
             return res.redirect('/');
         }
 

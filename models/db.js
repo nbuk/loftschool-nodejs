@@ -4,29 +4,29 @@ const path = require("path");
 
 const adapter = new FileAsync(path.join(process.cwd(), "./models/myDB.json"));
 
-// low(adapter).then((db) => {
-//     db.defaults({
-//         products: [],
-//         skills: {
-//             age: {
-//                 number: "123",
-//                 text: "Возраст начала занятий на скрипке",
-//             },
-//             concerts: {
-//                 number: "123",
-//                 text: "Концертов отыграл",
-//             },
-//             cities: {
-//                 number: "123",
-//                 text: "Максимальное число городов в туре",
-//             },
-//             years: {
-//                 number: "123",
-//                 text: "Лет на сцене в качестве скрипача",
-//             },
-//         },
-//     }).write().then(() => console.log('defaults saved'));
-// });
+low(adapter).then((db) => {
+    db.defaults({
+        products: [],
+        skills: {
+            age: {
+                number: "123",
+                text: "Возраст начала занятий на скрипке",
+            },
+            concerts: {
+                number: "123",
+                text: "Концертов отыграл",
+            },
+            cities: {
+                number: "123",
+                text: "Максимальное число городов в туре",
+            },
+            years: {
+                number: "123",
+                text: "Лет на сцене в качестве скрипача",
+            },
+        },
+    }).write().then(() => console.log('defaults saved'));
+});
 
 module.exports.loadProducts = () => {
     return new Promise((resolve, reject) => {
