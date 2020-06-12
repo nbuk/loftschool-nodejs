@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const Koa = require('koa');
 const Pug = require('koa-pug');
@@ -15,12 +16,17 @@ const pug = new Pug({
 })
 
 app.use(static(path.join(process.cwd(), 'public')));
-app.use(koaBody());
+app.use(koaBody({
+    multipart: true,
+    formidable: {
+        uploadDir: path.join(process.cwd(), './public/assets/img/')
+    }
+}));
 
 app.keys = ['secret key'];
 
 app.use(session({
-    maxAge: 10 * 60 * 1000,
+    maxAge: 10 * 60 * 1000
 }, app))
 
 app.use(router.routes());

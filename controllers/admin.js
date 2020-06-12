@@ -1,11 +1,62 @@
 const fs = require("fs");
+const util = require('util');
+const unLinkFile = util.promisify(fs.unlink);
+const renameFile = util.promisify(fs.rename);
 const formidable = require("formidable");
 const path = require("path");
-const { saveProductToDB, setSkills } = require("../models/db");
+const DataBase = require("../models/db");
+const uploadDir = require('../core/config').UPLOAD_DIR;
+
+const db = new DataBase(path.join(process.cwd(), './models/myDB.json'));
 
 module.exports.get = async (ctx, next) => {
-    return await ctx.render("pages/admin.pug");
+    const msgfile = ctx.session.msgfile || '';
+    
+    return await ctx.render("pages/admin.pug", { msgfile });
 };
+
+module.exports.addNewProduct = async (ctx, next) => {
+    const file = ctx.request.files.photo;
+    const formData = ctx.request.body;
+    const valid = validate(ctx);
+
+    if (valid.err) {
+        unLinkFile(file.path);
+        return await ctx.render('pages/admin.pug', { msgfile: valid.status })
+    }
+
+    const fileName = path.join(uploadDir, file.name);
+
+    renameFile(file.path, fileName).then(() => console.log('File saved'));
+
+    function validate(ctx) {
+        const fileData = ctx.request.files.photo;
+        const formData = ctx.request.body;
+
+        if (fileData.name === '' || fileData.size === 0) {
+            return { status: 'Картинка не загружена', err: true }
+        }
+
+        if (!formData.name || !formData.price) {
+            return { status: 'Не указаны название товара / цена', err: true }
+        }
+
+        return { status: 'Успешно загружено', err: false }
+    }
+
+    const products = db.get('products');
+
+    products.push({
+        name: formData.name,
+        price: formData.price,
+        src: `./assets/img/products/${file.name}`
+    })
+
+    db.write('products', products);
+
+    ctx.session.msgfile = valid.status;
+    ctx.redirect('/admin');
+}
 
 // module.exports.addNewProduct = (req, res) => {
 //     const uploadDir = path.join(process.cwd(), "./public/assets/img/products");

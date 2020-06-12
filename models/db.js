@@ -1,97 +1,30 @@
 const fs = require('fs');
+const util = require('util');
+const writeFile = util.promisify(fs.writeFile);
 
 class DataBase {
     constructor(path) {
-        this.data = this.getData(path);
+        this._dbFilePath = path;
+        this._data = this._getData(path);
     }
 
-    getData(path) {
-        return fs.readFileSync(path, err => {
-            console.error(err);
-        });
+    _getData(path) {
+        return JSON.parse(fs.readFileSync(path, 'utf8'));
     }
 
-    get(str) {
-        return this.data[str];
+    get(selector) {
+        return this._data[selector];
     }
 
-    
+    write(selector, obj) {
+        this._data[selector] = obj;
+        const dataToWrite = JSON.stringify(this._data);
+        writeFile(this._dbFilePath, dataToWrite)
+            .then(() => console.log('Data saved'))
+            .catch((err) => {
+                throw new Error(err);
+            });
+    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// const low = require("lowdb");
-// const FileAsync = require("lowdb/adapters/FileAsync");
-// const path = require("path");
-
-// const adapter = new FileAsync(path.join(process.cwd(), "./models/myDB.json"));
-
-// low(adapter).then((db) => {
-//     db.defaults({
-//         products: [],
-//         skills: {
-//             age: {
-//                 number: "123",
-//                 text: "Возраст начала занятий на скрипке",
-//             },
-//             concerts: {
-//                 number: "123",
-//                 text: "Концертов отыграл",
-//             },
-//             cities: {
-//                 number: "123",
-//                 text: "Максимальное число городов в туре",
-//             },
-//             years: {
-//                 number: "123",
-//                 text: "Лет на сцене в качестве скрипача",
-//             },
-//         },
-//     }).write().then(() => console.log('defaults saved'));
-// });
-
-// module.exports.loadProducts = () => {
-//     return new Promise((resolve, reject) => {
-//         low(adapter).then(async (db) => {
-//             resolve(db.get("products").value());
-//         });
-//     });
-// };
-
-// module.exports.loadSkills = () => {
-//     return new Promise((resolve, reject) => {
-//         low(adapter).then((db) => {
-//             resolve(db.get("skills").value());
-//         });
-//     });
-// };
-
-// module.exports.saveProductToDB = (data) => {
-//     low(adapter).then((db) => {
-//         db.get("products")
-//             .push(data)
-//             .write()
-//             .then(() => console.log("DB has been updated"));
-//     });
-// };
-
-// module.exports.setSkills = (data) => {
-//     low(adapter).then((db) => {
-//         let skills = db.get("skills").value();
-//         for (skill in data) {
-//             skills[skill].number = data[skill];
-//         }
-//         db.set("skills", skills)
-//             .write()
-//             .then(() => console.log("Skills has been updated"));
-//     });
-// };
+module.exports = DataBase;
