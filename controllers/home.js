@@ -1,4 +1,4 @@
-const config = require("../core/mailConfig.json");
+const config = require("../core/config").mailConfig;
 const nodemailer = require("nodemailer");
 const { loadProducts, loadSkills } = require("../models/db");
 
