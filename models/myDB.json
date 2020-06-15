@@ -1,0 +1,42 @@
+{
+  "products": [
+    {
+      "name": "Очки",
+      "price": "9 999",
+      "src": "./assets/img/products/Work3.jpg"
+    },
+    {
+      "name": "Люстра",
+      "price": "1000",
+      "src": "./assets/img/products/Work8.jpg"
+    },
+    {
+      "name": "Stakan",
+      "price": "123",
+      "src": "./assets/img/products/Work6.jpg"
+    },
+    {
+      "name": "Люстра",
+      "price": "100",
+      "src": "./assets/img/products/Work8.jpg"
+    }
+  ],
+  "skills": {
+    "age": {
+      "number": "333",
+      "text": "Возраст начала занятий на скрипке"
+    },
+    "concerts": {
+      "number": "333",
+      "text": "Концертов отыграл"
+    },
+    "cities": {
+      "number": "333",
+      "text": "Максимальное число городов в туре"
+    },
+    "years": {
+      "number": "333",
+      "text": "Лет на сцене в качестве скрипача"
+    }
+  }
+}
